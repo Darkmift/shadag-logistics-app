@@ -9,7 +9,12 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify'],
   },
-  modules: ['@invictus.codes/nuxt-vuetify', '@nuxtjs/i18n', '@pinia/nuxt'],
+  modules: [
+    '@invictus.codes/nuxt-vuetify',
+    '@nuxtjs/i18n',
+    '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt',
+  ],
   vuetify: {
     /* vuetify options */
     vuetifyOptions: {
@@ -36,5 +41,8 @@ export default defineNuxtConfig({
         transformAssetUrls,
       },
     },
+  },
+  pinia: {
+    // imports: ['~/store'],
   },
 });

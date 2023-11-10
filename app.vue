@@ -1,6 +1,16 @@
 <template>
   <v-app>
     <v-content>
+      <v-container>
+        <v-row>
+          <v-col cols="12">
+            <v-btn @click="drawerStore.toggleDrawer">Moo</v-btn>
+          </v-col>
+          <v-col cols="12">
+            {{ drawerStore.openDrawer }}
+          </v-col>
+        </v-row>
+      </v-container>
       <v-locale-provider :rtl="isRtl">
         <router-view></router-view>
       </v-locale-provider>
@@ -9,25 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useLocale } from 'vuetify';
-import { watch, onMounted } from 'vue';
-
-const { current } = useLocale();
-const i18n = useI18n();
-const isRtl = ref(current.value === 'he');
-
-watch(
-  () => i18n.locale.value,
-  (locale) => {
-    current.value = locale;
-    document.documentElement.setAttribute('dir', locale === 'he' ? 'rtl' : 'ltr');
-    isRtl.value = locale === 'he';
-  },
-  { immediate: true }
-);
-
-onMounted(() => {
-  document.documentElement.setAttribute('dir', i18n.locale.value === 'he' ? 'rtl' : 'ltr');
-  isRtl.value = current.value === 'he';
-});
+import { useSetLocale } from './composables/setLocale';
+const { isRtl } = useSetLocale();
+const drawerStore = useMyDrawerStore();
 </script>
