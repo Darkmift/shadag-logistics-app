@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
+    '@vee-validate/nuxt',
   ],
   vuetify: {
     /* vuetify options */
@@ -45,4 +46,8 @@ export default defineNuxtConfig({
   pinia: {
     // imports: ['~/store'],
   },
+  veeValidate: {
+    autoImports: true,
+  },
+  plugins: ['~/plugins/vee-validate.ts'],
 });
