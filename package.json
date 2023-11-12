@@ -2,6 +2,9 @@
   "name": "nuxt-app",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "20.8.1"
+  },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -28,6 +31,7 @@
     "@vee-validate/i18n": "^4.11.8",
     "@vee-validate/nuxt": "^4.11.8",
     "@vee-validate/rules": "^4.11.8",
+    "@vee-validate/yup": "^4.11.8",
     "pinia": "^2.1.7",
     "sass": "^1.69.5",
     "vee-validate": "^4.11.8",
