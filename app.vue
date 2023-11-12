@@ -1,18 +1,13 @@
 <template>
   <v-app>
     <v-content>
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <v-btn @click="drawerStore.toggleDrawer">Moo</v-btn>
-          </v-col>
-          <v-col cols="12">
-            {{ drawerStore.openDrawer }}
-          </v-col>
-        </v-row>
-      </v-container>
       <v-locale-provider :rtl="isRtl">
-        <router-view></router-view>
+        <app-layout>
+          <app-navigation-bar></app-navigation-bar>
+          <v-main>
+            <router-view></router-view>
+          </v-main>
+        </app-layout>
       </v-locale-provider>
     </v-content>
   </v-app>
@@ -20,6 +15,10 @@
 
 <script lang="ts" setup>
 import { useSetLocale } from './composables/setLocale';
+import AppLayout from './components/layout/Layout.vue';
+import AppNavigationBar from './components/layout/Navigation.vue';
 const { isRtl } = useSetLocale();
-const drawerStore = useMyDrawerStore();
+definePageMeta({
+  title: 'Shadag',
+});
 </script>

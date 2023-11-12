@@ -1,3 +1,4 @@
+import { setLocale } from '@vee-validate/i18n';
 import { useLocale } from 'vuetify';
 
 export const useSetLocale = () => {
@@ -10,6 +11,7 @@ export const useSetLocale = () => {
     (locale) => {
       current.value = locale;
       isRtl.value = locale === 'he';
+      setLocale(locale);
     },
     { immediate: true }
   );

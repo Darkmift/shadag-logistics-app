@@ -1,13 +1,6 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="6">
-        <v-select
-          :label="$t('message.selectLanguage')"
-          v-model="i18n.locale.value"
-          :items="i18n.localeCodes.value"
-        ></v-select>
-      </v-col>
       <v-col cols="12">
         <v-title>{{ `${$t('message.hello')} ${$t('welcome')}` }}</v-title>
         {{ current }}
@@ -30,19 +23,16 @@ const i18n = useI18n({
     en: {
       message: {
         hello: 'Hello',
-        selectLanguage: 'Select Language',
       },
     },
     fr: {
       message: {
         hello: 'Bonjour',
-        selectLanguage: 'Choisir la langue',
       },
     },
     he: {
       message: {
         hello: 'שלום',
-        selectLanguage: 'בחירת שפה',
       },
     },
   },
