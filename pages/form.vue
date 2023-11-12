@@ -19,7 +19,6 @@
 
 <script lang="ts" setup>
 import * as yup from 'yup';
-import { ref } from 'vue';
 import { useForm } from 'vee-validate';
 
 const i18n = useI18n({
@@ -27,7 +26,7 @@ const i18n = useI18n({
   locale: 'en',
   messages: {
     en: { email: 'Email', submit: 'Send' },
-    fr: { email: 'Email', submit: 'Send' },
+    fr: { email: 'Email', submit: 'Envoyer' },
     he: { email: 'דוא"ל', submit: 'שליחת טופס' },
   },
 });
