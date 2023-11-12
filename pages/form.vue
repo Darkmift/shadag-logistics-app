@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-form @submit.prevent="handleSubmit(onSubmit)">
+        <v-form @submit.prevent="onSubmit">
           <v-text-field
             v-model="email"
             :error-messages="errors.email"
@@ -18,8 +18,8 @@
 </template>
 
 <script lang="ts" setup>
-import * as yup from 'yup';
-import { useForm } from 'vee-validate';
+import { useForm, useField, defineRule } from 'vee-validate';
+import { required, email as emailRule } from '@vee-validate/rules';
 
 const i18n = useI18n({
   useScope: 'global',
@@ -35,18 +35,13 @@ interface FormValues {
   email: string;
 }
 
-const schema = yup.object({
-  email: yup.string().email().required(),
+// Using VeeValidate's useForm and useField
+const { handleSubmit, errors, validate } = useForm<FormValues>();
+const { value: email } = useField('email', 'required|email');
+
+useSetLocale(validate as any);
+
+const onSubmit = handleSubmit((values) => {
+  console.log(values, email.value);
 });
-
-const { handleSubmit, errors, useFieldModel } = useForm<FormValues>({
-  validationSchema: schema,
-});
-
-const [email] = useFieldModel(['email']);
-
-const onSubmit = (values: FormValues) => {
-  console.log('Form submitted:', values);
-  // Handle form submission logic here
-};
 </script>
