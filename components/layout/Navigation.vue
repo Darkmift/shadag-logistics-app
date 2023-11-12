@@ -4,21 +4,16 @@
     <v-toolbar-title>{{ $t('appName') }}</v-toolbar-title>
     <v-spacer></v-spacer>
     <div class="pt-5 mx-5" style="width: 200px">
-      <v-select
-        rounded
-        variant="outlined"
-        density="compact"
-        :label="$t('selectLanguage')"
-        v-model="i18n.locale.value"
-        :items="i18n.localeCodes.value"
-      ></v-select>
+      <SelectLanguage />
     </div>
+    <dark-mode-btn />
   </v-app-bar>
 </template>
 
 <script lang="ts" setup>
 import { commonLocales } from '~/plugins/i18n/i18n.config';
-
+import DarkModeBtn from '~/components/DarkModeBtn.vue';
+import SelectLanguage from '~/components/SelectLanguage.vue';
 const drawerStore = useMyDrawerStore();
 const i18n = useI18n({
   useScope: 'global',
@@ -27,15 +22,12 @@ const i18n = useI18n({
   messages: {
     en: {
       appName: 'Shadag',
-      selectLanguage: 'Select Language',
     },
     fr: {
       appName: 'Shadag',
-      selectLanguage: 'Choisir la langue',
     },
     he: {
       appName: 'שד"ג',
-      selectLanguage: 'בחירת שפה',
     },
   },
 });
