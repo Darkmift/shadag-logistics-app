@@ -41,6 +41,7 @@ const drawerStore = useMyDrawerStore();
 const links = [
   { title: 'home', to: '/', icon: 'mdi-view-dashboard' },
   { title: 'form', to: '/form', icon: 'mdi-email' },
+  { title: 'logistics', to: '/logistics', icon: 'mdi-email' },
   { title: 'thankYou', to: '/thank-you', icon: 'mdi-heart' },
 ];
 
@@ -54,6 +55,7 @@ const i18n = useI18n({
       thankYou: 'Thank You',
       darkMode: 'Dark Mode',
       lightMode: 'Light Mode',
+      logistics: 'Logistics',
     },
     fr: {
       home: 'Accueil',
@@ -61,6 +63,7 @@ const i18n = useI18n({
       thankYou: 'Merci',
       darkMode: 'Mode sombre',
       lightMode: 'Mode clair',
+      logistics: 'Logistique',
     },
     he: {
       home: 'בית',
@@ -68,6 +71,7 @@ const i18n = useI18n({
       thankYou: 'תודה רבה',
       darkMode: 'מצב כהה',
       lightMode: 'מצב בהיר',
+      logistics: 'לוגיסטיקה',
     },
   },
 });

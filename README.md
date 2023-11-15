@@ -6,3 +6,4 @@
 - [i18n - locales](https://vue-i18n.intlify.dev/guide/essentials/local)
 - [i18n - my adapatation for composition](https://chat.openai.com/share/18bc74d7-690c-48d5-851d-1fb1092a0231)
 - [useForm - VeeValidate](https://vee-validate.logaretm.com/v4/api/use-form/)
+- [regex israel id](https://www.upnext.co.il/articles/israeli-id-numer-validation/)

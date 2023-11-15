@@ -33,7 +33,7 @@ export default defineNuxtConfig({
   },
   i18n: {
     vueI18n: './plugins/i18n/i18n.config.ts',
-    locales: ['he', 'en', 'fr'], // used in URL path prefix
+    locales: ['he', 'en' /*, 'fr'*/], // used in URL path prefix
     defaultLocale: 'he', // default locale of your project for Nuxt pages and routings
   },
   vite: {
@@ -50,4 +50,7 @@ export default defineNuxtConfig({
     autoImports: true,
   },
   plugins: ['~/plugins/vee-validate.ts'],
+  css: [
+    '~/assets/css/global.css', // Path to your global CSS file
+  ],
 });

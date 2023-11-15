@@ -1,0 +1,4 @@
+/* css fix for v-phone-input */
+.v-phone-input__country__input .v-input__control .v-field {
+  padding-bottom: 4px;
+}

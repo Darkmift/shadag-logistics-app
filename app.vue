@@ -17,6 +17,7 @@
 import { useSetLocale } from './composables/setLocale';
 import AppLayout from './components/layout/Layout.vue';
 import AppNavigationBar from './components/layout/Navigation.vue';
+
 const { isRtl } = useSetLocale();
 definePageMeta({
   title: 'Shadag',
