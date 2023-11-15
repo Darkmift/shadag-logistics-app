@@ -9,7 +9,9 @@
             <v-col cols="6">
               <v-text-field
                 v-model="firstName"
-                :error-messages="errors.firstName"
+                :error-messages="
+                  metaFirstname.dirty && metaFirstname.touched ? errors.firstName : ''
+                "
                 :name="$t('firstName')"
                 :label="$t('firstName')"
                 required
@@ -19,8 +21,7 @@
             <v-col cols="6">
               <v-text-field
                 v-model="lastName"
-                :error-messages="errors.lastName"
-                :data-vv-as="$t('lastName')"
+                :error-messages="metaLastname.touched ? errors.lastName : ''"
                 :label="$t('lastName')"
                 required
               ></v-text-field>
@@ -35,20 +36,28 @@
                 validate-on="blur"
               />
             </v-col>
-          </v-row>
-
-          <!-- Additional fields -->
-          <v-row>
             <!-- National ID -->
             <v-col cols="6">
               <v-text-field
                 v-model="nationalId"
-                :error-messages="errors.nationalId"
+                :error-messages="metaNationalId.touched ? errors.nationalId : ''"
                 :label="$t('nationalId')"
                 required
               ></v-text-field>
             </v-col>
+            <v-col cols="12">
+              <v-radio-group
+                v-model="isMeantForRequester"
+                :error-messages="metaIsMeantForRequester.touched ? errors.isMeantForRequester : ''"
+              >
+                <v-radio color="primary" :label="$t('yes')" :value="true" checked></v-radio>
+                <v-radio color="primary" :label="$t('meantForOther')" :value="false"></v-radio>
+              </v-radio-group>
+            </v-col>
+          </v-row>
 
+          <!-- Additional fields -->
+          <v-row>
             <!-- Extra Contact Full Name -->
             <v-col cols="6">
               <v-text-field
@@ -60,18 +69,20 @@
 
             <!-- Extra Contact Phone -->
             <v-col cols="6">
-              <v-text-field
-                v-model="extraContactPhone"
-                :error-messages="errors.extraContactPhone"
+              <v-phone-input
                 :label="$t('extraContactPhone')"
-              ></v-text-field>
+                :countryLabel="$t('phone.phoneCountry')"
+                v-model="extraContactPhone"
+                :rules="[]"
+                validate-on="blur"
+              />
             </v-col>
 
             <!-- Destination Address -->
             <v-col cols="6">
               <v-text-field
                 v-model="destinationAddress"
-                :error-messages="errors.destinationAddress"
+                :error-messages="metaDestinationAddress.touched ? errors.destinationAddress : ''"
                 :label="$t('destinationAddress')"
                 required
               ></v-text-field>
@@ -97,12 +108,14 @@
 
             <!-- City -->
             <v-col cols="6">
-              <v-text-field
+              <v-autocomplete
                 v-model="city"
-                :error-messages="errors.city"
                 :label="$t('city')"
-                required
-              ></v-text-field>
+                :items="cities"
+                :error-messages="metaCity.touched ? errors.city : ''"
+                auto-select-first
+                clearable
+              ></v-autocomplete>
             </v-col>
 
             <!-- Comments For Destination Address -->
@@ -112,6 +125,24 @@
                 :error-messages="errors.commentsForDestinationAddress"
                 :label="$t('commentsForDestinationAddress')"
               ></v-textarea>
+            </v-col>
+
+            <!-- line items -->
+            <v-col cols="12">
+              <v-autocomplete
+                v-model="selectedProductList"
+                return-object
+                multiple
+                :label="$t('products')"
+                item-title="name"
+                chips
+                :items="(products as unknown as ItemInList[])"
+                :error-messages="metaProduct.touched ? errors.product : ''"
+                auto-select-first
+                closable-chips
+                clearable
+              ></v-autocomplete>
+              <multi-input :lineItems="selectedProductList" />
             </v-col>
 
             <!-- Comments For Request -->
@@ -131,31 +162,13 @@
 </template>
 
 <script lang="ts" setup>
+import cities from '~/assets/data/cities.json';
+import products from '~/assets/data/products.json';
 import { useForm, useField, configure } from 'vee-validate';
 import 'v-phone-input/dist/v-phone-input.css';
 import { localize } from '@vee-validate/i18n';
-
-export interface LineItem {
-  code: string;
-  quantity: number;
-  note: string;
-}
-
-interface FormValues {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  nationalId: string;
-  extraContactFullName: string;
-  extraContactPhone: string;
-  destinationAddress: string;
-  streetNumber: string;
-  apartmentNumber: string;
-  city: string;
-  commentsForDestinationAddress: string;
-  items?: LineItem[];
-  commentsForRequest: string;
-}
+import MultiInput from '~/components/MultiRowInput.vue';
+import type { FormValues, LineItem, ItemInList } from '~/types';
 
 const i18n = useI18n({
   useScope: 'global',
@@ -183,6 +196,8 @@ const i18n = useI18n({
       itemName: 'Item Name',
       itemDescription: 'Item Description',
       commentsForRequest: 'Comments for Request',
+      yes: 'Yes',
+      meantForOther: 'No, I want to help someone else',
     },
     he: {
       phone: {
@@ -205,6 +220,8 @@ const i18n = useI18n({
       itemName: 'שם פריט',
       itemDescription: 'תיאור פריט',
       commentsForRequest: 'הערות לבקשה',
+      yes: 'כן',
+      meantForOther: 'לא, אני רוצה לעזור למישהו אחר',
     },
   },
 });
@@ -234,37 +251,76 @@ configure({
 
 // Using VeeValidate's useForm and useField
 const { handleSubmit, errors, validate } = useForm<FormValues>();
-const { value: firstName } = useField('firstName', 'required');
-const { value: lastName } = useField(
-  'lastName',
+const { value: firstName, meta: metaFirstname } = useField('firstName', 'required');
+const { value: lastName, meta: metaLastname } = useField(
+  'lastName', // (value) => !!value || i18n.t('lastName'),
   'required'
-  // (value) => !!value || i18n.t('lastName')
 );
 const { value: phone } = useField('phone', 'required');
-const { value: nationalId } = useField('nationalId', 'israelId');
+const { value: nationalId, meta: metaNationalId } = useField('nationalId', 'israelId');
+const { value: isMeantForRequester, meta: metaIsMeantForRequester } = useField(
+  'isMeantForRequester',
+  'required',
+  { type: 'checkbox', initialValue: true }
+);
 const { value: extraContactFullName } = useField('extraContactFullName');
 const { value: extraContactPhone } = useField('extraContactPhone', {
   requiredIfFieldListedIsFilled: ['extraContactFullName', i18n.t('extraContactFullName')],
 });
-const { value: destinationAddress } = useField('destinationAddress', 'required');
-const { value: streetNumber } = useField('streetNumber');
-const { value: apartmentNumber } = useField('apartmentNumber');
-const { value: city } = useField('city', 'required');
+const { value: destinationAddress, meta: metaDestinationAddress } = useField(
+  'destinationAddress',
+  'required'
+);
+const { value: streetNumber } = useField('streetNumber', 'integer');
+const { value: apartmentNumber } = useField('apartmentNumber', 'integer');
+const { value: city, meta: metaCity } = useField(
+  'city',
+  // (v: string) => {
+  //   if (!!v || cities.includes(v) === false) {
+  //     console.log('cityerror');
+  //     return i18n.t('cityError');
+  //   }
+  //   return true;
+  // },
+  'required',
+  { initialValue: '' }
+);
 const { value: commentsForDestinationAddress } = useField(
   'commentsForDestinationAddress',
   'max:500'
 );
-// TODO figure out array of item inputs
-// const { value: amountItem } = useField('amountItem', 'required');
-// const { value: itemName } = useField('itemName', 'required');
-// const { value: itemDescription } = useField('itemDescription');
+
+const { value: selectedProductList, meta: metaProduct } = useField<LineItem[]>(
+  'product',
+  'required',
+  {
+    initialValue: [],
+  }
+);
 const { value: commentsForRequest } = useField('commentsForRequest', 'max:500');
+
+
+watch(
+  () => selectedProductList.value,
+  (selectedItems) => {
+    console.log('🚀 ~ file: logistics.vue:217 ~ newVal', selectedItems);
+
+    selectedProductList.value.forEach((item) => {
+      item.note = item.note || '';
+      item.quantity = item.quantity || 1;
+    });
+  }
+);
 
 useSetLocale(validate as any);
 
 // phone v-phone-input rule
 const requiredRule = (value: string) => !!value || i18n.t('phone.invalidPhoneGiven');
-
+// set city in autocomplete
+const setCity = (value: string) => {
+  console.log('🚀 ~ file: logistics.vue:302 ~ setCity ~ value:', value);
+  city.value = value;
+};
 const onSubmit = handleSubmit((values) => {
   console.log(values, firstName.value);
 });
